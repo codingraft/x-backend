@@ -19,15 +19,19 @@ cloudinary.config({
 
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
-app.use(cors());
-app.use(express.json({ limit: '1000kb' }));
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 4000;
+app.use(cors({
+  origin: "http://localhost:5173", // <-- frontend origin
+  credentials: true, // <-- MUST be true to allow cookies
+}));
+app.use(express.json({ limit: '1000kb' }));
+app.use(morgan('dev'));
 
- 
+const PORT = process.env.PORT || 6000;
+
+   
 
 app.get('/', (_, res) => {
     res.send('Hello World!');

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import { CookieResponse } from "../types/types.js";
+import { Response } from "express";
 
 export const connectDB = async () => {
     try {
@@ -12,8 +12,11 @@ export const connectDB = async () => {
     }
 }
 
-export const generateToken = (userId: any, response: CookieResponse) => {
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
+export const generateToken = (userId: any, response: Response) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET is not defined in environment variables");
+    }
+    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
         expiresIn: '30d',
     });
 
@@ -21,7 +24,7 @@ export const generateToken = (userId: any, response: CookieResponse) => {
         httpOnly: true, // prevent client-side JavaScript from accessing the cookie, also helps mitigate XSS attacks
         sameSite: "strict", // helps prevent CSRF attacks
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: process.env.NODE_ENV !== "development", // set to true if using HTTPS
+          secure: process.env.NODE_ENV === "production", // set to true if using HTTPS
     });
-
+    return token;
 }

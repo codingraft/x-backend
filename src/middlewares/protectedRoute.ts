@@ -9,6 +9,7 @@ export const protectedRoute = async (
   next: NextFunction
 ) => {
   try {
+    // console.log("req.cookies: ", req);
     const token = req.cookies?.jwt;
     // console.log("Token: ", token);
     if (!token) {

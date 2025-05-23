@@ -46,6 +46,8 @@ export const signUp = async (
       username,
     });
 
+    // console.log("New User: ", newUser);
+
     if (newUser) {
       generateToken(newUser._id, res);
       await newUser.save();
@@ -85,8 +87,10 @@ export const login = async (
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
-    //send token
-    generateToken(user._id, res);
+        // console.log(" User: ", user);
+    //send token 
+    const token = generateToken(user._id, res);
+    // console.log("Token: ", token);
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.log("Login error:", error);
