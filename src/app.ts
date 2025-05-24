@@ -21,11 +21,20 @@ cloudinary.config({
 const app = express();
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+const allowedOrigins = ["https://x-one-sable.vercel.app"];
 
-app.use(cors({
-  origin: "https://x-one-sable.vercel.app", // <-- frontend origin
-  credentials: true, // <-- MUST be true to allow cookies
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: '1000kb' }));
 app.use(morgan('dev'));
 
