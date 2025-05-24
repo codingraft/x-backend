@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: "https://x-one-sable.vercel.app/", // <-- frontend origin
+  origin: "https://x-one-sable.vercel.app", // <-- frontend origin
   credentials: true, // <-- MUST be true to allow cookies
 }));
 app.use(express.json({ limit: '1000kb' }));
