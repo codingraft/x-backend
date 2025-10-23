@@ -9,7 +9,8 @@ export const protectedRoute = async (
   next: NextFunction
 ) => {
   try {
-    // console.log("req.cookies: ", req);
+        // console.log(process.env.JWT_SECRET);
+    // console.log("req.cookies: ", req.cookies);
     const token = req.cookies?.jwt;
     // console.log("Token: ", token);
     if (!token) {
@@ -17,6 +18,7 @@ export const protectedRoute = async (
         .status(401)
         .json({ message: "Unauthorized No Token Provided" });
     }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     if (!decoded || typeof decoded === "string") {
       return res.status(401).json({ message: "Unauthorized Invalid Token" });
