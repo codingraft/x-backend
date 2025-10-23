@@ -21,8 +21,8 @@ cloudinary.config({
 const app = express();
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-// const allowedOrigins = ["https://x-one-sable.vercel.app"];
-const allowedOrigins = ["http://localhost:5173", "https://x-one-sable.vercel.app"];
+const allowedOrigins = ["https://x-one-sable.vercel.app"];
+// const allowedOrigins = ["http://localhost:5173", "https://x-one-sable.vercel.app"];
 
 app.use(
   cors({
