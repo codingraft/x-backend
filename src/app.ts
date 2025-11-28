@@ -1,58 +1,52 @@
 import express from 'express';
-import { connectDB } from './utils/lib.js';
-import authRoutes from './routes/auth.route.js';
-import usersRoutes from './routes/users.route.js';
-import postsRoutes from './routes/posts.route.js';
-import notificationsRoutes from './routes/notifications.route.js';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import { v2 as cloudinary } from 'cloudinary';
+import { connectDB } from './config/db.js';
+import userRoutes from './routes/user.routes.js';
+import eventRoutes from './routes/event.routes.js';
 import cors from 'cors';
 import morgan from 'morgan';
+
 dotenv.config();
- 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-})
-
-
 const app = express();
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-const allowedOrigins = ["https://x-one-sable.vercel.app"];
-// const allowedOrigins = ["http://localhost:5173", "https://x-one-sable.vercel.app"];
+
+// CORS configuration - allow your frontend domains
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://event-mangement-frontend.vercel.app",
+  "https://event-mangement-backend-r5n2.vercel.app"
+];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log('Blocked by CORS:', origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
   })
 );
-app.use(express.json({ limit: '1000kb' }));
+
+app.use(express.json());
 app.use(morgan('dev'));
-
-const PORT = process.env.PORT || 6000;
-
-   
-
-app.get('/', (_, res) => {
-    res.send('Hello World!');
-});
-app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/users', usersRoutes)
-app.use('/api/v1/posts', postsRoutes)
-app.use('/api/v1/notifications', notificationsRoutes)
-
 connectDB();
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+
+app.get('/', (_, res) => {
+  res.send('Hello World!'); 
 });
+
+app.use('/api/user', userRoutes);
+app.use('/api/events', eventRoutes); 
+ 
+const PORT = process.env.PORT
+ 
+app.listen(PORT, () => { 
+  console.log(`Server is running on port ${PORT}`)
+});         
